@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django site</title>
+</head>
+<body>
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">
+                {% block mainmenu %}
+            {% endblock mainmenu %}
+            </th>
+        </tr>
+    </thead>
+    <tr>
+        <td valign="top" class="rightmenu">
+        </td>
+        <td>
+            {% block content %}
+            {% endblock %}
+        </td>
+    </tr>
+    <tfoot>
+    <tr>
+        <td colspan="2">
+            <div class="jfooter">
+            </div>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</body>
+</html>
