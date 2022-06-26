@@ -6,7 +6,13 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'testService.settings')
+    try:
+        import testService.settings_local
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'testService.settings_local')
+        print('Local_settings used')
+    except ImportError:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'testService.settings')
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

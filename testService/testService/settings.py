@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
-#import testService.settings_local
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
+SECRET_KEY = "12345"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'testService',
 ]
 
 MIDDLEWARE = [
@@ -53,12 +51,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'testService.urls'
-# D:\python\django\django_task\testService\templates\myTest\index.html
-# D:\python\django\django_task\testService\myTest\templates\myTest\index.html
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'myTest\\templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,8 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'ua'
-LANGUAGE_CODE = 'ru'
 
 
 TIME_ZONE = 'UTC'
