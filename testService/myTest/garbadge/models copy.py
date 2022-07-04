@@ -7,10 +7,66 @@ from django.contrib.contenttypes.fields import GenericForeignKey, ContentType
 
 from django.urls import reverse
 
+class Answer(models.Model):
+    questionid = models.ForeignKey('Question', on_delete=models.CASCADE, verbose_name='Вопрос')
+    value =  models.CharField(max_length=255, verbose_name='Ответ')
+    correct = models.BooleanField(verbose_name='Правильный ответ')
+    
+    def __str__(self):
+        return self.value
+
+    class Meta:
+        verbose_name = 'Ответ'
+        verbose_name_plural = 'Ответы'
+
+
+class Question(models.Model):
+    text = models.TextField(blank=True, verbose_name='Вопрос')
+    questionid = models.ManyToManyField('Test', related_name='testid', through='TestQuestion')#, through_fields=['testid', 'questionid'])
+    answerid = models.ManyToManyField('Answer')#, through_fields=['testid', 'questionid'])
+    
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        verbose_name = 'Вопрос'
+        verbose_name_plural = 'Вопросы'
+
+
+class Test(models.Model):
+    name =  models.CharField(max_length=255, verbose_name='Тест')
+    questionid = models.ManyToManyField(Question, through='TestQuestion')#, through_fields=['testid', 'questionid'])
+
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Тест'
+        verbose_name_plural = 'Тесты'
+
+class TestQuestion(models.Model):
+    testid = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name='Тест')
+    questionid = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='Вопрос')
+    
+
+    def __str__(self):
+        return str(self.testid) + ' - ' + str(self.questionid)
+
+    class Meta:
+        verbose_name = 'Вопросы в тесте'
+        verbose_name_plural = 'Вопросы в тестах'
+
+"""
+    TestQuestion (id, testId, questionId)
+    Test (id, name, ...)
+    Question(id, text)
+    Answer (id, questionId, value, correctYN)
+"""""
 
 class UserTest(models.Model):
     userid = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    testid = models.ForeignKey('Te', on_delete=models.CASCADE, verbose_name='Тест')
+    testid = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name='Тест')
     score = models.FloatField(verbose_name='Результат, %')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время начала тестирования')
         
@@ -22,7 +78,7 @@ class UserTest(models.Model):
         verbose_name_plural = 'Результаты пользователей'
 
 class TestResults(models.Model):
-    testquestionid = models.ForeignKey('TeQues', on_delete=models.CASCADE, verbose_name='Вопрос теста')
+    testquestionid = models.ForeignKey(TestQuestion, on_delete=models.CASCADE, verbose_name='Вопрос теста')
 #    questionid = models.ForeignKey(Questions, on_delete=models.CASCADE, verbose_name='Номер вопроса')
 #    is_passed = models.BooleanField(default=False, verbose_name='Вопрос пройден в данном тестировании')
     result = models.BooleanField(default=False, verbose_name='Правильно отвечен')

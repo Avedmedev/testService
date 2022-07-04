@@ -6,8 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-#from women.models import Women, Category
-from myTest.forms import RegisterUserForm, LoginUserForm
+from myTest.forms.myTest.forms import RegisterUserForm, LoginUserForm
 
 from myTest.utils import DataMixin
 

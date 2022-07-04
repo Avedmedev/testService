@@ -12,11 +12,86 @@ from django.contrib.auth.models import Group
 from .models import *
 
 
+class TestQuestionInline(admin.StackedInline):
+    model = TestQuestion
 
+
+class TestQuestionAnswerForm(forms.ModelForm):
+
+    answerid = forms.ModelMultipleChoiceField(
+        widget=widgets.FilteredSelectMultiple('name', False), 
+        queryset=Answer.objects.all()
+        )
+
+    def __init__(self, *args, **kwargs) -> None:
+        super(TestQuestionAnswerForm, self).__init__( *args, **kwargs)
+
+
+    class Meta:
+        model = TestQuestion
+        fields= ['testid']
+        
+
+class TestQuestionAnswerFormAdmin(admin.ModelAdmin):
+    form = forms.modelform_factory(
+        TestQuestion,
+        form=TestQuestionAnswerForm, 
+        fields=['testid', 'questionid'])
+
+
+admin.site.register(TestQuestion, TestQuestionAnswerFormAdmin)
+
+
+class AnswerAdminForm(forms.ModelForm):
+    
+    answerid = forms.ModelMultipleChoiceField(
+        widget=widgets.FilteredSelectMultiple('answerid', False), 
+        queryset=Answer.objects.all()
+        )
+    answerid1 = forms.ModelMultipleChoiceField(
+        widget=widgets.FilteredSelectMultiple('name', False), 
+        queryset=Answer.objects.all()
+        )
+
+
+    def __init__(self, *args, **kwargs) -> None:
+        super(AnswerAdminForm, self).__init__( *args, **kwargs)
+
+        if self.instance and self.instance.pk:
+            print(self.instance.pk)
+            self.fields['answerid'] = forms.ModelMultipleChoiceField(
+                queryset=Answer.objects.all().exclude(pk=self.instance.pk),
+                required=False,
+                widget=widgets.FilteredSelectMultiple(
+                    verbose_name='Ответы',
+                    is_stacked=False
+                )
+            )
+
+    class Meta:
+        model = Question
+        exclude = ('',)
+
+class QuestsFormAdmin(admin.ModelAdmin):
+    form = AnswerAdminForm
+
+
+class TestAdmin(admin.ModelAdmin):
+    model = Test
+    inlines = [TestQuestionInline]
+
+
+admin.site.register(Question, QuestsFormAdmin)
+admin.site.register(Answer)
+admin.site.register(Test, TestAdmin)
 admin.site.register(UserTest)
 admin.site.register(TestResults)
 admin.site.unregister(Group)
 
+
+
+# class AnsInline(admin.TabularInline):
+#     model = Ans
 
 class MyTeAdminForm(forms.ModelForm):
     
